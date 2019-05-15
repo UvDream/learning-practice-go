@@ -1,4 +1,4 @@
-module replace-script
+module img
 
 go 1.12
 
