@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	img2txt("C:/Users/Administrator/Desktop/nanjing.png", 200, []string{"@", "#", "*", "%", "+", ",", ".", " "}, "\n", "./保存的文本.txt")
+	img2txt("/Users/wangzhongjie/Desktop/Code/github/learning-practice-go/example/img/go.png", 200, []string{"@", "#", "*", "%", "+", ",", ".", " "}, "\n", "./保存的文本.txt")
 }
 /*先定义一个函数
 参数：
