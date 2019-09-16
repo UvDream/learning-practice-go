@@ -30,6 +30,7 @@ func test() (int, string) {
 	return 1, "abc"
 }
 
+
 //注意重新赋值与定义新同名变量的区别
 func test2() {
 	s2 := "abc"
