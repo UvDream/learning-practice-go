@@ -13,6 +13,7 @@ import "fmt"
 //	n:=x+y		//多返回值必须用括号
 //	return n,fmt.Sprintf(s,n)
 //}
+
 //函数是第一类对象,可作为参数传递,建议将复杂签名定义为函数类型
 func test(fn func() int)int{
 	return fn()
