@@ -17,5 +17,9 @@ func main()  {
 	// 十六进制
 	i3:=0x1234567
 	fmt.Printf("%d\n",i3)
-
+	// 查看变量类型%T
+	fmt.Printf("%T\n",i3)
+	// 声明init8类型的变量
+	i4:=int8(9)//明确指定类型,否则默认为int
+	fmt.Printf("%T\n",i4)
 }
