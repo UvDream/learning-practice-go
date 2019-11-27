@@ -330,3 +330,58 @@ fmt.Println(s1)
 | strings.Index(),strings.LastIndex() | 子串出现的位置 |
 | strings.Join(a[]string, sep string) | join操作       |
 
+## byte和rune类型
+
+当需要处理中文、日文或者其他复合字符时，则需要用到`rune`类型。`rune`类型实际是一个`int32`。
+
+```go
+// 遍历字符串
+func traversalString() {
+	s := "hello沙河"
+	for i := 0; i < len(s); i++ { //byte
+		fmt.Printf("%v(%c) ", s[i], s[i])
+	}
+	fmt.Println()
+	for _, r := range s { //rune
+		fmt.Printf("%v(%c) ", r, r)
+	}
+	fmt.Println()
+}
+```
+
+输出
+
+```bash
+104(h) 101(e) 108(l) 108(l) 111(o) 230(æ) 178(²) 153() 230(æ) 178(²) 179(³) 
+104(h) 101(e) 108(l) 108(l) 111(o) 27801(沙) 27827(河) 
+```
+
+## 修改字符串
+
+要修改字符串，需要先将其转换成`[]rune`或`[]byte`，完成后再转换为`string`。无论哪种转换，都会重新分配内存，并复制字节数组。
+
+```go
+func changeString() {
+	s1 := "big"
+	// 强制类型转换
+	byteS1 := []byte(s1)
+	byteS1[0] = 'p'
+	fmt.Println(string(byteS1))
+
+	s2 := "白萝卜"
+	runeS2 := []rune(s2)
+	runeS2[0] = '红'
+	fmt.Println(string(runeS2))
+}
+```
+
+## 类型转换
+
+Go语言中只有强制类型转换，没有隐式类型转换。该语法只能在两个类型之间支持相互转换的时候使用。
+
+### 基本语法
+
+```bash
+T(表达式)
+```
+
