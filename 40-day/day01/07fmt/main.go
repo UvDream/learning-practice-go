@@ -14,5 +14,7 @@ func main()  {
 	fmt.Printf("%o\n",a)
 	fmt.Printf("%x\n",a)
 	var s="Hello"
-	fmt.Printf("%s",s)
+	fmt.Printf("%s\n",s)
+	fmt.Printf("%v\n",s)
+	fmt.Printf("%#v",s)
 }
