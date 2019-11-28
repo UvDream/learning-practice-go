@@ -586,3 +586,49 @@ for i:=0;i<10;i++{
 	fmt.Println("结束")
 ```
 
+## goto
+
+`goto`语句通过标签进行代码间的无条件跳转。`goto`语句可以在快速跳出循环、避免重复退出上有一定的帮助。Go语言中使用`goto`语句能简化一些代码的实现过程。 例如双层嵌套的for循环要退出时：
+
+```go
+	var flag=false
+	for i:=0;i<10;i++{
+		for j:='A';j<'Z';j++{
+			if j=='C'{
+				flag=true
+				break //跳出内层循环
+			}
+			fmt.Printf("%v-%c\n",i,j)
+		}
+		if flag{
+			break
+		}
+	}
+```
+
+使用goto
+
+```go
+for i:=0;i<10;i++{
+		for j:='A';j<'Z';j++{
+			if j=='C'{
+				goto xx
+			}
+			fmt.Printf("%v-%c\n",i,j)
+		}
+		
+	}
+xx:
+	fmt.Println("结束")
+```
+
+# 数组
+
+## 数组定义
+
+```bash
+var 数组变量名 [元素数量]T
+```
+
+## 数组的初始化
+
