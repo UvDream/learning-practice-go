@@ -540,3 +540,49 @@ for i,v:=range s{
 }
 ```
 
+## switch case
+
+```go
+func switchDemo1() {
+	finger := 3
+	switch finger {
+	case 1:
+		fmt.Println("大拇指")
+	case 2:
+		fmt.Println("食指")
+	case 3:
+		fmt.Println("中指")
+	case 4:
+		fmt.Println("无名指")
+	case 5:
+		fmt.Println("小拇指")
+	default:
+		fmt.Println("无效的输入！")
+	}
+}
+```
+
+## break(跳出循环)
+
+```go
+	for i:=0;i<10;i++{
+		if i==5{
+			break
+		}
+		fmt.Println(i)
+	}
+	fmt.Println("结束")
+```
+
+## continue(继续下次循环)
+
+```go
+for i:=0;i<10;i++{
+		if i==5{
+			continue
+		}
+		fmt.Println(i)
+	}
+	fmt.Println("结束")
+```
+
