@@ -6,7 +6,7 @@
   在编程语言中标识符就是程序员定义的具有特殊意义的词，比如变量名、常量名、函数名等等。 Go 语言中标识符由字母数字和`_`(下划线）组成，并且只能以字母和`_`开头。 举几个例子：`abc, _, _123, a123`。
 - 关键字
 
-```
+```go
 break        default      func         interface    select
 case         defer        go           map          struct
 chan         else         goto         package      switch
@@ -16,7 +16,7 @@ continue     for          import       return       var
 
 - 保留字
 
-```
+```go
 Constants:    true  false  iota  nil
 
 Types:  int  int8  int16  int32  int64
@@ -655,7 +655,7 @@ fmt.Println(a3)
 
 ## 数组遍历
 
-#### 1.根据索引
+### 1.根据索引
 
 ```go
 cityS := [...]string{"北京", "上海", "深圳"}
