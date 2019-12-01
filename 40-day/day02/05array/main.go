@@ -30,4 +30,10 @@ func main()  {
 	for i,v:=range cityS{
 		fmt.Println(i,v)
 	}
+
+	// 数组值类型
+	b1:=[3]int{1,2,3}   //b1 [1,2,3]
+	b2:=b1				//b2 [1,2,3]
+	b2[0]=100			//b2 [100,2,3]
+	fmt.Println(b1,b2)	
 }
