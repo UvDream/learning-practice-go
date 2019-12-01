@@ -717,3 +717,96 @@ b := [3][...]string{
 ### 数组是值类型
 
 数组是值类型，赋值和传参会复制整个数组。因此改变副本的值，不会改变本身的值。
+
+```go
+// 数组值类型
+	b1:=[3]int{1,2,3}   //b1 [1,2,3]
+	b2:=b1				//b2 [1,2,3]
+	b2[0]=100			//b2 [100,2,3]
+	fmt.Println(b1,b2)	
+```
+
+**注意：**
+
+1. 数组支持 “==“、”!=” 操作符，因为内存总是被初始化过的。
+2. `[n]*T`表示指针数组，`*[n]T`表示数组指针 。
+
+# 切片
+
+切片（Slice）是一个拥有相同类型元素的可变长度的序列。它是基于数组类型做的一层封装。它非常灵活，支持自动扩容。
+
+切片是一个引用类型，它的内部结构包含`地址`、`长度`和`容量`。切片一般用于快速地操作一块数据集合。
+
+## 切片的定义
+
+```go
+var name []T
+```
+
+```go
+	// 切片定义
+	var s1 []int
+	var s2 []string
+	fmt.Println(s1,s2)
+	fmt.Println(s1==nil)  //true
+	fmt.Println(s2==nil)  //true
+	// 初始化
+	s1=[]int{1,2,3}
+	s2=[]string{"上海","北京","深圳"}
+	fmt.Println(s1,s2)
+	fmt.Println(s1==nil)  //false
+	fmt.Println(s2==nil)  //false
+```
+
+## 切片的长度和容量
+
+切片拥有自己的长度和容量，我们可以通过使用内置的len()函数求长度，使用内置的cap()函数求切片的容量。
+
+```go
+	// 切片定义
+	var s1 []int
+	var s2 []string
+	// 初始化
+	s1=[]int{1,2,3}
+	s2=[]string{"上海","北京","深圳"}
+	fmt.Printf("len(s1):%d cap(s1):%d\n",len(s1),cap(s1))
+	fmt.Printf("len(s2):%d cap(s2):%d\n",len(s2),cap(s2))
+```
+
+## 基于数组定义切片
+
+由于切片的底层就是一个数组，所以我们可以基于数组定义切片。
+
+```go
+	// 由数组得到切片
+	a1:=[ ... ]int{1,3,4,5,6,7,9}
+	s3:=a1[0:4]   //基于数组切割左包含,右不含[)
+	fmt.Println(s3)  //[1 3 4 5]
+	s4:=a1[1:6]
+	fmt.Println(s4) //[3 4 5 6 7]
+	s5:=a1[:2]
+	fmt.Println(s5) //[1 3]
+	s6:=a1[:]
+	fmt.Println(s6)  //[1 3 4 5 6 7 9]
+```
+
+## 切片再切片(指向底层数组)
+
+```go
+a1:=[ ... ]int{1,3,4,5,6,7,9}
+s5:=a1[:4]
+// 切片的容量是指底层数组的容量
+fmt.Printf("len(s5):%d cap(s5):%d\n",len(s5),cap(s5))  //len(s5):4 cap(s5):7
+// 底层数组从切片的第一个元素指向到最后一个元素的数量
+fmt.Printf("len(s5):%d cap(s5):%d\n",len(s4),cap(s4))  //len(s5):5 cap(s5):6
+//切片再切片
+	s8:=s4[3:] 
+	fmt.Println("这是s4",s4)  	// [3 4 5 6 7]
+	fmt.Println("这是s8",s8)	//[6 7]
+	fmt.Printf("len(s8):%d cap(s8):%d\n",len(s8),cap(s8)) //len(s8):2 cap(s8):4
+```
+
+![slice_01](https://www.liwenzhou.com/images/Go/slice/slice_01.png)
+
+![slice_02](https://www.liwenzhou.com/images/Go/slice/slice_02.png)
+
