@@ -800,13 +800,86 @@ fmt.Printf("len(s5):%d cap(s5):%d\n",len(s5),cap(s5))  //len(s5):4 cap(s5):7
 // 底层数组从切片的第一个元素指向到最后一个元素的数量
 fmt.Printf("len(s5):%d cap(s5):%d\n",len(s4),cap(s4))  //len(s5):5 cap(s5):6
 //切片再切片
-	s8:=s4[3:] 
-	fmt.Println("这是s4",s4)  	// [3 4 5 6 7]
-	fmt.Println("这是s8",s8)	//[6 7]
-	fmt.Printf("len(s8):%d cap(s8):%d\n",len(s8),cap(s8)) //len(s8):2 cap(s8):4
+s8:=s4[3:] 
+fmt.Println("这是s4",s4)  	// [3 4 5 6 7]
+fmt.Println("这是s8",s8)	//[6 7]
+fmt.Printf("len(s8):%d cap(s8):%d\n",len(s8),cap(s8)) //len(s8):2 cap(s8):4
+```
+
+
+
+
+
+## 使用make()函数构造切片
+
+```bash
+make([]T, size, cap)
+```
+
+- T:切片的元素类型
+- size:切片中元素的数量
+- cap:切片的容量
+
+```go
+// make()函数创造切片
+s1 := make([]int, 5, 10)
+fmt.Printf("s=%v len(s1)=%d cap(s1)=%d\n", s1, len(s1), cap(s1))
+```
+
+## 切片的本质
+
+切片的本质就是对底层数组的封装，它包含了三个信息：底层数组的指针、切片的长度（len）和切片的容量（cap）。
+
+
+
+```go
+a := [8]int{0, 1, 2, 3, 4, 5, 6, 7}`，切片`s1 := a[:5]
 ```
 
 ![slice_01](https://www.liwenzhou.com/images/Go/slice/slice_01.png)
 
+切片`s2 := a[3:6]`，相应示意图如下：
+
 ![slice_02](https://www.liwenzhou.com/images/Go/slice/slice_02.png)
+
+## 切片不能直接比较
+
+切片之间是不能比较的，我们不能使用`==`操作符来判断两个切片是否含有全部相等元素。 切片唯一合法的比较操作是和`nil`比较。 一个`nil`值的切片并没有底层数组，一个`nil`值的切片的长度和容量都是0。但是我们不能说一个长度和容量都是0的切片一定是`nil`
+
+```go
+var s1 []int         //len(s1)=0;cap(s1)=0;s1==nil
+s2 := []int{}        //len(s2)=0;cap(s2)=0;s2!=nil
+s3 := make([]int, 0) //len(s3)=0;cap(s3)=0;s3!=nil
+```
+
+所以要判断一个切片是否是空的，要是用`len(s) == 0`来判断，不应该使用`s == nil`来判断。
+
+## 切片的赋值拷贝
+
+```go
+// 切片的赋值
+	s3 := []int{1, 3, 5}
+	s4 := s3 // s3和s4都指向同一个底层数组
+	s4[0] = 100
+	fmt.Println(s3, s4) //[100 3 5] [100 3 5]
+	s3[0] = 200
+	fmt.Println(s3, s4) //[200 3 5] [200 3 5]
+```
+
+
+
+## 切片的遍历
+
+```go
+// 索引遍历
+	for i := 0; i < len(s3); i++ {
+		fmt.Println(s3[i])
+	}
+	// for range
+	for _, v := range s3 {
+		fmt.Println(v)
+	}
+```
+
+## append()方法为切片添加元素
 
