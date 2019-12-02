@@ -883,3 +883,52 @@ s3 := make([]int, 0) //len(s3)=0;cap(s3)=0;s3!=nil
 
 ## append()方法为切片添加元素
 
+Go语言的内建函数`append()`可以为切片动态添加元素。 每个切片会指向一个底层数组，这个数组能容纳一定数量的元素。当底层数组不能容纳新增的元素时，切片就会自动按照一定的策略进行“扩容”，此时该切片指向的底层数组就会更换。“扩容”操作往往发生在`append()`函数调用时
+
+```go
+	s1 := []string{"北京", "上海", "深圳"}
+	fmt.Printf("len(s1):%d cap(s1):%d\n", len(s1), cap(s1)) //len(s1):3 cap(s1):3
+	// s1[3]="南京" //错误写法,索引越界
+	// append,调用必须使用原来的切片接受返回值,底层数组放不下的时候,原来的底层数组换一个位置3->6->12
+	s1 = append(s1, "南京")
+	fmt.Printf("len(s1):%d cap(s1):%d\n", len(s1), cap(s1)) //len(s1):4 cap(s1):6
+	fmt.Println(s1)                                         //[北京 上海 深圳 南京]
+	// 多个元素
+	s1 = append(s1, "合肥", "杭州", "无锡")
+	fmt.Printf("len(s1):%d cap(s1):%d\n", len(s1), cap(s1)) //len(s1):7 cap(s1):12
+	// 追加切片
+	a := []string{"成都", "重庆"}
+	s1 = append(s1, a...) //a...拆开切片
+	fmt.Println(s1)       //[北京 上海 深圳 南京 合肥 杭州 无锡 成都 重庆]
+```
+
+## 切片的扩容策略
+
+- 首先判断，如果新申请容量（cap）大于2倍的旧容量（old.cap），最终容量（newcap）就是新申请的容量（cap）。
+- 否则判断，如果旧切片的长度小于1024，则最终容量(newcap)就是旧容量(old.cap)的两倍，即（newcap=doublecap），
+- 否则判断，如果旧切片长度大于等于1024，则最终容量（newcap）从旧容量（old.cap）开始循环增加原来的1/4，即（newcap=old.cap,for {newcap += newcap/4}）直到最终容量（newcap）大于等于新申请的容量(cap)，即（newcap >= cap）
+- 如果最终容量（cap）计算值溢出，则最终容量（cap）就是新申请容量（cap）。
+
+## 使用copy()函数复制切片
+
+```go
+// copy
+	a1 := []int{1, 3, 5}
+	a2 := a1
+	var a3 = make([]int, 3, 3)
+	copy(a3, a1)            // 使用copy()函数将切片a中的元素复制到切片c
+	fmt.Println(a1, a2, a3) //[1 3 5] [1 3 5] [1 3 5]
+	a1[0] = 100
+	fmt.Println(a1, a2, a3) //[100 3 5] [100 3 5] [1 3 5]
+```
+
+## 从切片中删除元素
+
+```go
+	// 删除元素
+	// 删除索引为1的元素(其实就是就是拼接原理),切完容量不变
+	a1 = append(a1[:1], a1[2:]...)
+	fmt.Println(a1) //[100 5]
+	fmt.Printf("len(a1):%d cap(a1):%d\n", len(a1), cap(a1)) //len(a1):2 cap(a1):3
+```
+
