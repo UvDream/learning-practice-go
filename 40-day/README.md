@@ -912,7 +912,7 @@ Go语言的内建函数`append()`可以为切片动态添加元素。 每个切�
 ## 使用copy()函数复制切片
 
 ```go
-// copy
+	// copy
 	a1 := []int{1, 3, 5}
 	a2 := a1
 	var a3 = make([]int, 3, 3)
@@ -946,5 +946,204 @@ Go语言的内建函数`append()`可以为切片动态添加元素。 每个切�
 	fmt.Println(x1)                                         // [1 5 5]
 	// 通过切片可以修改底层数组
 	s1[0]=100  //x1[100,5,5]
+```
+
+# 指针
+
+区别于C/C++中的指针，Go语言中的指针不能进行偏移和运算，是安全指针。
+
+要搞明白Go语言中的指针需要先知道3个概念：指针地址、指针类型和指针取值。
+
+```go
+	// 1.& 取地址
+	n := 18
+	fmt.Println(&n) //0xc000092008
+	p := &n
+	fmt.Println(p)
+	fmt.Printf("%T\n", p) //*int
+	// 2.* 根据地址取值
+	m := *p
+	fmt.Println(m)        //18
+	fmt.Printf("%T\n", p) //*int
+```
+
+取地址操作符`&`和取值操作符`*`是一对互补操作符，`&`取出地址，`*`根据地址取出地址指向的值。
+
+变量、指针地址、指针变量、取地址、取值的相互关系和特性如下：
+
+- 对变量进行取地址（&）操作，可以获得这个变量的指针变量。
+- 指针变量的值是指针地址。
+- 对指针变量进行取值（*）操作，可以获得指针变量指向的原变量的值。
+
+## new和make
+
+```go
+func main() {
+	var a *int
+	*a = 100
+	fmt.Println(*a)
+
+	var b map[string]int
+	b["沙河娜扎"] = 100
+	fmt.Println(b)
+}
+```
+
+### new
+
+```go
+func new(Type) *Type
+```
+
+- Type表示类型，new函数只接受一个参数，这个参数是一个类型
+- *Type表示类型指针，new函数返回一个指向该类型内存地址的指针。
+
+new函数不太常用，使用new函数得到的是一个类型的指针，并且该指针对应的值为该类型的零值。
+
+```go
+	var a = new(int)
+	fmt.Println(*a)
+	*a = 100
+	fmt.Println(*a)	
+```
+
+### make
+
+make也是用于内存分配的，区别于new，它只用于slice、map以及chan的内存创建，而且它返回的类型就是这三个类型本身，而不是他们的指针类型，因为这三种类型就是引用类型，所以就没有必要返回他们的指针了。make函数的函数签名如下：
+
+```go
+func make(t Type, size ...IntegerType) Type
+```
+
+make函数是无可替代的，我们在使用slice、map以及channel的时候，都需要使用make进行初始化，然后才可以对它们进行操作。这个我们在上一章中都有说明，关于channel我们会在后续的章节详细说明。
+
+本节开始的示例中`var b map[string]int`只是声明变量b是一个map类型的变量，需要像下面的示例代码一样使用make函数进行初始化操作之后，才能对其进行键值对赋值：
+
+```go
+func main() {
+	var b map[string]int
+	b = make(map[string]int, 10)
+	b["沙河娜扎"] = 100
+	fmt.Println(b)
+}
+```
+
+### new与make的区别
+
+1. 二者都是用来做内存分配的。
+2. make只用于slice、map以及channel的初始化，返回的还是这三个引用类型本身；
+3. 而new用于类型的内存分配，并且内存对应的值为类型零值，返回的是指向类型的指针。
+
+# map
+
+Go语言中提供的映射关系容器为`map`，其内部使用`散列表（hash）`实现。
+
+map是一种无序的基于`key-value`的数据结构，Go语言中的map是引用类型，必须初始化才能使用。
+
+## map定义
+
+```go
+map[KeyType]ValueType
+```
+
+- KeyType:表示键的类型。
+- ValueType:表示键对应的值的类型。
+
+```go
+	// map,需要初始化后才能使用
+	var m1 map[string]int
+	// 初始化map
+	m1 = make(map[string]int, 10)
+	m1["北京"] = 1
+	m1["上海"] = 2
+	fmt.Println(m1)
+	fmt.Println(m1["北京"])
+```
+
+## 查询是否存在某个键
+
+```go
+v, ok := m1["呵呵"]
+	if !ok {
+		fmt.Println("查无此地")
+	} else {
+		fmt.Println(v)
+	}
+```
+
+## map的遍历
+
+```go
+for k, v := range m1 {
+		fmt.Println(k, v)
+	}
+```
+
+## 使用delete()函数删除键值对
+
+使用`delete()`内建函数从map中删除一组键值对，`delete()`函数的格式如下：
+
+```go
+delete(map, key)
+```
+
+其中，
+
+- map:表示要删除键值对的map
+- key:表示要删除的键值对的键
+
+```go
+	// 删除
+	delete(m1, "上海")
+	fmt.Println(m1)
+	delete(m1, "呵呵") //删除不存在的key	
+```
+
+## 按照指定顺序遍历map
+
+```go
+func main() {
+	rand.Seed(time.Now().UnixNano()) //初始化随机数种子
+
+	var scoreMap = make(map[string]int, 200)
+
+	for i := 0; i < 100; i++ {
+		key := fmt.Sprintf("stu%02d", i) //生成stu开头的字符串
+		value := rand.Intn(100)          //生成0~99的随机整数
+		scoreMap[key] = value
+	}
+	fmt.Println("map", scoreMap)
+	//取出map中的所有key存入切片keys
+	var keys = make([]string, 0, 200)
+	for key := range scoreMap {
+		keys = append(keys, key)
+	}
+	//对切片进行排序
+	sort.Strings(keys)
+	//按照排序后的key遍历map
+	for _, key := range keys {
+		fmt.Println(key, scoreMap[key])
+	}
+}
+```
+
+## 元素为map类型的切片
+
+```go
+	// 元素类型为map的切片
+	var s1 = make([]map[int]string, 10, 10)
+	// s1[0][100] = "1" //内部map没初始化
+	s1[0] = make(map[int]string, 1)
+	s1[0][10] = "北京"
+	fmt.Println(s1)
+```
+
+## 值为切片类型的map
+
+```go
+	// 值为切片类型的map
+	var m1 = make(map[string][]int, 10)
+	m1["北京"] = []int{10, 20, 30}
+	fmt.Println(m1)
 ```
 
