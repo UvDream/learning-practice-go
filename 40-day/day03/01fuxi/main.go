@@ -62,6 +62,9 @@ func main() {
 	fmt.Println(m1)
 	m1["呵呵"] = 1
 	fmt.Println(m1)
+	// delete
+	delete(m1, "呵呵")
+	fmt.Println(m1)
 
 }
 func f1(a [3]int) {
