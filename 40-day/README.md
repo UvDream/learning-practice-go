@@ -1147,3 +1147,85 @@ func main() {
 	fmt.Println(m1)
 ```
 
+# defer
+
+Go语言中的`defer`语句会将其后面跟随的语句进行延迟处理。在`defer`归属的函数即将返回时，将延迟处理的语句按`defer`定义的逆序进行执行，也就是说，先被`defer`的语句最后被执行，最后被`defer`的语句，最先被执行。
+
+```go
+	fmt.Println("start")
+	defer fmt.Println("呵呵")
+	fmt.Println("end")
+```
+
+```go
+start
+end
+呵呵
+```
+
+由于`defer`语句延迟调用的特性，所以`defer`语句能非常方便的处理资源释放问题。比如：资源清理、文件关闭、解锁及记录时间等。
+
+## defer执行时机
+
+在Go语言的函数中`return`语句在底层并不是原子操作，它分为给返回值赋值和RET指令两步。而`defer`语句执行的时机就在返回值赋值操作后，RET指令执行前。具体如下图所示：
+
+![defer执行时机](https://www.liwenzhou.com/images/Go/func/defer.png)
+
+## defer经典
+
+```go
+// defer 延迟到函数即将返回的时候再执行
+// 1.返回值赋值
+// defer
+// 2.真正的RET返回
+func deferDemo() {
+	fmt.Println("start")
+	defer fmt.Println("呵呵")
+	defer fmt.Println("嘿嘿")
+	fmt.Println("end")
+}
+func f1() int {
+	x := 5
+	defer func() {
+		x++
+	}()
+	return x
+}
+
+func f2() (x int) {
+	defer func() {
+		x++
+	}()
+	return 5 // 返回值x
+}
+
+func f3() (y int) {
+	x := 5
+	defer func() {
+		x++
+	}()
+	return x // 返回值=y=x=5
+}
+func f4() (x int) {
+	defer func(x int) {
+		x++
+	}(x)
+	return 5 // 返回值=x=5
+}
+func main() {
+	fmt.Println(f1())
+	fmt.Println(f2())
+	fmt.Println(f3())
+	fmt.Println(f4())
+}
+```
+
+```go
+5
+6
+5
+5
+```
+
+
+
