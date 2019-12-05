@@ -1123,21 +1123,21 @@ func main() {
 ## 元素为 map 类型的切片
 
 ```go
-	// 元素类型为map的切片
-	var s1 = make([]map[int]string, 10, 10)
-	// s1[0][100] = "1" //内部map没初始化
-	s1[0] = make(map[int]string, 1)
-	s1[0][10] = "北京"
-	fmt.Println(s1)
+// 元素类型为map的切片
+var s1 = make([]map[int]string, 10, 10)
+// s1[0][100] = "1" //内部map没初始化
+s1[0] = make(map[int]string, 1)
+s1[0][10] = "北京"
+fmt.Println(s1) //[map[1:北京] map[] map[] map[] map[] map[] map[] map[] map[] map[]]
 ```
 
 ## 值为切片类型的 map
 
 ```go
-	// 值为切片类型的map
-	var m1 = make(map[string][]int, 10)
-	m1["北京"] = []int{10, 20, 30}
-	fmt.Println(m1)
+// 值为切片类型的map
+var m1 = make(map[string][]int, 10)
+m1["北京"] = []int{10, 20, 30}
+fmt.Println(m1) //map[北京:[10 20 30]]
 ```
 
 # 函数
@@ -1287,3 +1287,131 @@ func main() {
 ```
 
 # 进阶函数
+
+## 变量作用域
+
+### 全局变量
+
+全局变量是定义在函数外部的变量，它在程序整个运行周期内都有效。 在函数中可以访问到全局变量。
+
+```go
+//定义全局变量num
+var num int64 = 10
+
+func testGlobalVar() {
+	fmt.Printf("num=%d\n", num) //函数中可以访问全局变量num
+}
+func main() {
+	testGlobalVar() //num=10
+}
+```
+
+### 局部变量
+
+局部变量又分为两种： 函数内定义的变量无法在该函数外使用，例如下面的示例代码main函数中无法使用testLocalVar函数中定义的变量x：
+
+```go
+func testLocalVar() {
+	//定义一个函数局部变量x,仅在该函数内生效
+	var x int64 = 100
+	fmt.Printf("x=%d\n", x)
+}
+
+func main() {
+	testLocalVar()
+	fmt.Println(x) // 此时无法使用变量x
+}
+```
+
+如果局部变量和全局变量重名，优先访问局部变量。if语句块局部作用域
+
+## 函数类型和变量
+
+### 定义函数类型
+
+我们可以使用`type`关键字来定义一个函数类型，具体格式如下：
+
+```go
+type calculation func(int, int) int
+```
+
+eg:
+
+```go
+func add(x, y int) int {
+	return x + y
+}
+//add能赋值给calculation类型的变量。
+var c calculation
+c = add
+```
+
+# 高阶函数
+
+## 函数作为参数
+
+## 函数作为返回值
+
+```go
+
+// 函数类型
+func f1() {
+	fmt.Println("函数")
+}
+
+func f2() int {
+	return 10
+}
+
+// 函数也可以作为参数的类型
+func f3(x func() int) {
+	ret := x()
+	fmt.Println("函数内部", ret)
+}
+func f4(x, y int) int {
+	return x + y
+}
+
+// 函数还可以作为返回值
+func f5(x func() int) func(int, int) int {
+	ret := func(a, b int) int {
+		return a + b
+	}
+	return ret
+}
+func main() {
+	a := f1
+	fmt.Printf("%T\n", a)
+	b := f2
+	fmt.Printf("%T\n", b)
+	f3(f2)
+	f3(b)
+	f7 := f5(f2)
+	fmt.Printf("%T\n", f7)
+}
+```
+
+## 匿名函数
+
+函数当然还可以作为返回值，但是在Go语言中函数内部不能再像之前那样定义函数了，只能定义匿名函数。匿名函数就是没有函数名的函数
+
+```go
+func(参数)(返回值){
+    函数体
+}
+```
+
+eg:
+
+```go
+// 函数内部不能声明带名字的函数
+	f1 := func(x, y int) {
+		fmt.Println(x + y)
+	}
+	f1(1, 2)
+	// 立即执行函数
+	func(x, y int) {
+		fmt.Println(x, y)
+	}(100, 200)
+```
+
