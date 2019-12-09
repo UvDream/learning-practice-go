@@ -1681,3 +1681,187 @@ func main() {
 }
 ```
 
+# 结构体
+
+Go语言中没有“类”的概念，也不支持“类”的继承等面向对象的概念。Go语言中通过结构体的内嵌再配合接口比面向对象具有更高的扩展性和灵活性。
+
+## 类型别名和自定义类型
+
+### 自定义类型
+
+在Go语言中有一些基本的数据类型，如`string`、`整型`、`浮点型`、`布尔`等数据类型， Go语言中可以使用`type`关键字来定义自定义类型。
+
+```go
+type myInt int     //自定义类型
+```
+
+### 类型别名
+
+类型别名规定：TypeAlias只是Type的别名，本质上TypeAlias与Type是同一个类型。就像一个孩子小时候有小名、乳名，上学后用学名，英语老师又会给他起英文名，但这些名字都指的是他本人。
+
+```go
+type yourInt = int //类型别名
+```
+
+### 类型定义和类型别名的区别
+
+```go
+func main() {
+	var n myInt
+	n = 100
+	fmt.Println(n)
+	fmt.Printf("%T\n", n)
+	var m yourInt
+	m = 100
+	fmt.Println(m)
+	fmt.Printf("%T\n", m)
+
+	var c rune
+	c = '中'
+	fmt.Printf("%T\n", c) //int32
+}
+```
+
+## 结构体
+
+Go语言中的基础数据类型可以表示一些事物的基本属性，但是当我们想表达一个事物的全部或部分属性时，这时候再用单一的基本数据类型明显就无法满足需求了，Go语言提供了一种自定义数据类型，可以封装多个基本数据类型，这种数据类型叫结构体，英文名称`struct`。 也就是我们可以通过`struct`来定义自己的类型了。
+
+### 结构体定义/实例化
+
+```go
+type 类型名 struct {
+    字段名 字段类型
+    字段名 字段类型
+    …
+}
+```
+
+其中：
+
+- 类型名：标识自定义结构体的名称，在同一个包内不能重复。
+- 字段名：表示结构体字段名。结构体中的字段名必须唯一。
+- 字段类型：表示结构体字段的具体类型。
+
+```go
+// 结构体
+// 定义
+type person struct {
+	name   string
+	age    int
+	gender string
+	hobby  []string
+}
+
+func main() {
+	var w person
+	// 实例化
+	w.name = "wzj"
+	w.age = 18
+	w.gender = "男"
+	w.hobby = []string{"篮球", "足球"}
+	fmt.Println(w)
+	fmt.Printf("%T\n", w)
+	// 访问名字
+	fmt.Println(w.name)
+}
+```
+
+## 匿名结构体
+
+在定义一些临时数据结构等场景下还可以使用匿名结构体。
+
+```go
+// 匿名结构体
+var s struct {
+	name string
+	age  int
+}
+s.name = "张三"
+s.age = 19
+fmt.Println(s)
+```
+
+## 创建指针类型结构体
+
+```go
+
+// 结构体是值类型
+type person struct {
+	name string
+	age  int
+}
+
+func f(x person) {
+	x.age = 20
+}
+func f2(x *person) {
+	//(*x).age = 30 //根据内存地址找到那个变量,修改的谁原来的变量
+	x.age = 30 //语法糖,自动根据指针找对应变量
+	fmt.Println("f2", *x)
+}
+func main() {
+	var p person
+	p.name = "呵呵"
+	p.age = 10
+	f(p)
+	fmt.Println(p)
+	f2(&p)
+	fmt.Println("f2地址", p)
+}
+```
+
+## 结构体初始化
+
+没有初始化的结构体，其成员变量都是对应其类型的零值。
+
+```go
+type person struct {
+	name string
+	city string
+	age  int8
+}
+
+func main() {
+	var p4 person
+	fmt.Printf("p4=%#v\n", p4) //p4=main.person{name:"", city:"", age:0}
+}
+```
+
+### 使用键值对初始化
+
+```go
+p5 := person{
+	name: "小王子",
+	city: "北京",
+	age:  18,
+}
+fmt.Printf("p5=%#v\n", p5) //p5=main.person{name:"小王子", city:"北京", age:18}
+```
+
+也可以对结构体指针进行键值对初始化，
+
+```go
+p6 := &person{
+	name: "小王子",
+	city: "北京",
+	age:  18,
+}
+fmt.Printf("p6=%#v\n", p6) //p6=&main.person{name:"小王子", city:"北京", age:18}
+```
+
+### 使用值的列表初始化
+
+```go
+p8 := &person{
+	"沙河娜扎",
+	"北京",
+	28,
+}
+fmt.Printf("p8=%#v\n", p8) //p8=&main.person{name:"沙河娜扎", city:"北京", age:28}
+```
+
+使用这种格式初始化时，需要注意：
+
+1. 必须初始化结构体的所有字段。
+2. 初始值的填充顺序必须与字段在结构体中的声明顺序一致。
+3. 该方式不能和键值初始化方式混用。
