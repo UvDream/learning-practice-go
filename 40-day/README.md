@@ -1465,3 +1465,47 @@ func main() {
 }
 ```
 
+# 内置函数介绍
+
+|    内置函数    |                             介绍                             |
+| :------------: | :----------------------------------------------------------: |
+|     close      |                     主要用来关闭channel                      |
+|      len       |      用来求长度，比如string、array、slice、map、channel      |
+|      new       | 用来分配内存，主要用来分配值类型，比如int、struct。返回的是指针 |
+|      make      |   用来分配内存，主要用来分配引用类型，比如chan、map、slice   |
+|     append     |                 用来追加元素到数组、slice中                  |
+| panic和recover |                        用来做错误处理                        |
+
+## panic/recover
+
+Go语言中目前（Go1.12）是没有异常机制，但是使用`panic/recover`模式来处理错误。 `panic`可以在任何地方引发，但`recover`只有在`defer`调用的函数中有效。
+
+```go
+
+func funcA() {
+	fmt.Println("A")
+}
+func funcB() {
+	defer func() {
+		err := recover()
+		if err != nil {
+			fmt.Println("recover B")
+		}
+	}()
+	panic("出现严重错误!") //程序崩溃退出
+
+}
+func funcC() {
+	fmt.Println("C")
+}
+func main() {
+	funcA()
+	funcB()
+	funcC()
+}
+```
+
+**注意：**
+
+1. `recover()`必须搭配`defer`使用。
+2. `defer`一定要在可能引发`panic`的语句之前定义。
