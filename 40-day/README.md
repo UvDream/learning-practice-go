@@ -1446,6 +1446,22 @@ func f3(f func(int, int), m, n int) func() {
 func main() {
 	f1(f3(f2, 2, 1))
 }
+```
 
+
+
+```go
+func adder() func(int) int {
+	var x int
+	return func(y int) int {
+		x += y
+		return x
+	}
+}
+func main() {
+	ret := adder()
+	ret2 := ret(200)
+	fmt.Println(ret2)
+}
 ```
 
