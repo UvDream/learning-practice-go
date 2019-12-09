@@ -1663,3 +1663,21 @@ func main() {
 }
 ```
 
+# 递归
+
+```go
+// 递归
+func f(n uint64) uint64 {
+	// 出口
+	if n <= 1 {
+		return 1
+	}
+	return n * f(n-1)
+}
+
+func main() {
+	ret := f(5)
+	fmt.Println(ret)
+}
+```
+
