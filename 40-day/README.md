@@ -2039,3 +2039,68 @@ func main() {
 ```
 
 匿名字段默认采用类型名作为字段名，结构体要求字段名称必须唯一，因此一个结构体中同种类型的匿名字段只能有一个。
+
+## 嵌套结构体
+
+```go
+// 结构体嵌套
+type address struct {
+	province string
+	city     string
+}
+type person struct {
+	name string
+	age  int
+	addr address
+}
+type company struct {
+	name string
+	addr address
+}
+
+func main() {
+	p1 := person{
+		name: "张三",
+		age:  12,
+		addr: address{
+			province: "山东",
+			city:     "威海",
+		},
+	}
+	fmt.Println(p1)
+	fmt.Println(p1.addr.city)
+
+}
+```
+
+### 嵌套匿名结构体
+
+```go
+type address struct {
+	province string
+	city     string
+}
+type person struct {
+	name    string
+	age     int
+	address //匿名嵌套
+}
+type company struct {
+	name string
+	addr address
+}
+
+func main() {
+	p1 := person{
+		name: "张三",
+		age:  12,
+		address: address{
+			province: "山东",
+			city:     "威海",
+		},
+	}
+	fmt.Println(p1)
+	fmt.Println(p1.city)//匿名结构体,可以直接访问,先自己结构体找,然后匿名嵌套里面查找
+}
+```
+
