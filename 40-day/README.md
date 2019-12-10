@@ -2104,3 +2104,27 @@ func main() {
 }
 ```
 
+### 嵌套结构体的字段名冲突
+
+```go
+type address struct {
+	province string
+	city     string
+}
+type workPlace struct {
+	province string
+	city     string
+}
+type person struct {
+	name    string
+	age     int
+	address //匿名嵌套
+	workPlace
+}
+...
+	fmt.Println(p1.address.city)//只能这样取了
+...
+```
+
+## 结构体的“继承”
+

@@ -7,10 +7,15 @@ type address struct {
 	province string
 	city     string
 }
+type workPlace struct {
+	province string
+	city     string
+}
 type person struct {
 	name    string
 	age     int
 	address //匿名嵌套
+	workPlace
 }
 type company struct {
 	name string
@@ -27,5 +32,5 @@ func main() {
 		},
 	}
 	fmt.Println(p1)
-	fmt.Println(p1.city)
+	fmt.Println(p1.address.city)
 }
