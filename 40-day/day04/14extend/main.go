@@ -32,6 +32,6 @@ func main() {
 		foot: 4,
 	}
 	fmt.Println(d1)
-	d1.wang()
-	d1.move()
+	d1.wang() //小三在叫
+	d1.move() //小三会动
 }
