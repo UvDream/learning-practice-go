@@ -1,3 +1,5 @@
+
+
 # 标识符与关键字
 
 ## 标识符与关键字
@@ -1889,4 +1891,73 @@ func main() {
 	fmt.Printf("n.d %p\n", &n.d) //n.d 0xc00005a083
 }
 ```
+
+## 构造函数
+
+Go语言的结构体没有构造函数，我们可以自己实现。 例如，下方的代码就实现了一个`person`的构造函数。 因为`struct`是值类型，如果结构体比较复杂的话，值拷贝性能开销会比较大，所以该构造函数返回的是结构体指针类型。
+
+```go
+func newPerson(name string, age int) *person {
+	return &person{
+		name: name,
+		age:  age,
+	}
+}
+func main() {
+	p1 := newPerson("张三", 11)
+	fmt.Println(p1)
+}
+```
+
+当结构体比较大的时候尽量使用结构体指针,减少程序的内存开销,
+
+* 构造函数new开头
+
+## 方法和接收者
+
+Go语言中的`方法（Method）`是一种作用于特定类型变量的函数。这种特定类型变量叫做`接收者（Receiver）`。接收者的概念就类似于其他语言中的`this`或者 `self`。
+
+方法的定义格式如下：
+
+```go
+func (接收者变量 接收者类型) 方法名(参数列表) (返回参数) {
+    函数体
+}
+```
+
+其中，
+
+- 接收者变量：接收者中的参数变量名在命名时，官方建议使用接收者类型名的第一个小写字母，而不是`self`、`this`之类的命名。例如，`Person`类型的接收者变量应该命名为 `p`，`Connector`类型的接收者变量应该命名为`c`等。
+- 接收者类型：接收者类型和参数类似，可以是指针类型和非指针类型。
+- 方法名、参数列表、返回参数：具体格式与函数定义相同。
+
+```go
+// go语言如果标识符首字母大写就表示对外部可见
+
+//Dog 这是一个狗的结构体//注释
+// type Dog struct {
+// 	name string
+// }
+type dog struct {
+	name string
+}
+
+func newDog(name string) dog {
+	return dog{
+		name: name,
+	}
+}
+
+// 方法作用于特定的函数
+func (d dog) wang() {
+	fmt.Println("wangwangwang", d.name)
+}
+
+func main() {
+	d1 := newDog("aaa")
+	d1.wang()
+}
+```
+
+
 
