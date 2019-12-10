@@ -1959,5 +1959,63 @@ func main() {
 }
 ```
 
+## 指针类型的接受者/值接受者
+
+```go
+type person struct {
+	name string
+	age  int
+}
+
+func newPerson(name string, age int) person {
+	return person{
+		name: name,
+		age:  age,
+	}
+}
+// 值类型(p person)为拷贝
+func (p person) guonian() {
+	p.age++
+}
+
+// (p *person)指针接受者
+func (p *person) zGuoNian() {
+	p.age++
+}
+func main() {
+	p1 := newPerson("张三", 18)
+	fmt.Println(p1)
+	p1.guonian()
+	fmt.Println(p1.age)
+	p1.zGuoNian()
+	fmt.Println(p1.age)
+}
+```
+
+### 什么时候应该使用指针类型接收者
+
+1. 需要修改接收者中的值
+2. 接收者是拷贝代价比较大的大对象
+3. 保证一致性，如果有某个方法使用了指针接收者，那么其他的方法也应该使用指针接收者。
+
+## 给任意类型添加方法
+
+```go
+// 任意类型添加方法
+// 不能给别的包的类型添加方法,只能给自己包的类型添加方法
+
+//myInt 将int定义为自定义myInt类型
+type myInt int
+
+func (i myInt) hello() {
+	fmt.Println("hello")
+
+}
+func main() {
+	m := myInt(100)
+	m.hello()
+}
+```
+
 
 
