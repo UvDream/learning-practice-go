@@ -2196,5 +2196,53 @@ func main() {
 }
 ```
 
+# 接口interface
+
+接口是一种类型
+
+## 接口类型
+
+在Go语言中接口（interface）是一种类型，一种抽象的类型。
+
+`interface`是一组`method`的集合，是`duck-type programming`的一种体现。接口做的事情就像是定义一个协议（规则），只要一台机器有洗衣服和甩干的功能，我就称它为洗衣机。不关心属性（数据），只关心行为（方法）。
+
+```go
+// 引出接口的实例
+type speaker interface {
+	speak() //只要实现了speak方法的变量都是speaker类型
+}
+type person struct {
+}
+type cat struct {
+}
+type dog struct {
+}
+
+func (c cat) speak() {
+	fmt.Println("喵喵猫")
+}
+func (d dog) speak() {
+	fmt.Println("汪汪汪")
+}
+func (p person) speak() {
+	fmt.Println("救命")
+}
+
+// 接受不定类型调用
+func play(x speaker) {
+	// 接受一个参数,传入进来就打印啥
+	x.speak()
+}
+
+func main() {
+	var c1 cat
+	var d1 dog
+	var p1 person
+	play(c1)
+	play(d1)
+	play(p1)
+}
+```
+
 
 
