@@ -1,0 +1,7 @@
+host: localhost:3306
+
+user: ggb
+
+pwd: 123456
+
+dbname: test
