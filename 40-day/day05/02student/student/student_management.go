@@ -2,13 +2,13 @@ package student
 
 import "fmt"
 
-// Student 解释
+// Student 学生
 type Student struct {
 	id   int64
 	name string
 }
 
-// Studentmanagement 解释
+// Studentmanagement 学生管理者
 type Studentmanagement struct {
 	AllStudent map[int64]Student
 }
