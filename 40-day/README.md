@@ -1786,7 +1786,6 @@ fmt.Println(s)
 ## 创建指针类型结构体
 
 ```go
-
 // 结构体是值类型
 type person struct {
 	name string
@@ -1840,7 +1839,7 @@ p5 := person{
 fmt.Printf("p5=%#v\n", p5) //p5=main.person{name:"小王子", city:"北京", age:18}
 ```
 
-也可以对结构体指针进行键值对初始化，
+也可以对结构体指针进行键值对初始化
 
 ```go
 p6 := &person{
