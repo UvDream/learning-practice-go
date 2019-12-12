@@ -1896,6 +1896,10 @@ func main() {
 Go语言的结构体没有构造函数，我们可以自己实现。 例如，下方的代码就实现了一个`person`的构造函数。 因为`struct`是值类型，如果结构体比较复杂的话，值拷贝性能开销会比较大，所以该构造函数返回的是结构体指针类型。
 
 ```go
+type person struct{
+  name string
+  age int64
+}
 func newPerson(name string, age int) *person {
 	return &person{
 		name: name,
@@ -2258,6 +2262,300 @@ type 接口类型名 interface{
 
 其中：
 
-- 接口名：使用`type`将接口定义为自定义的类型名。Go语言的接口在命名时，一般会在单词后面添加`er`，如有写操作的接口叫`Writer`，有字符串功能的接口叫`Stringer`等。接口名最好要能突出该接口的类型含义。
+- 接口名：使用`type`将接口定义为自定义的类型名。Go语言的接口在命名时，<u>一般会在单词后面添加er</u>，如有写操作的接口叫`Writer`，有字符串功能的接口叫`Stringer`等。接口名最好要能突出该接口的类型含义。
 - 方法名：当方法名首字母是大写且这个接口类型名首字母也是大写时，这个方法可以被接口所在的包（package）之外的代码访问。
 - 参数列表、返回值列表：参数列表和返回值列表中的参数变量名可以省略。
+
+```go
+type writer interface{
+    Write([]byte) error
+}
+```
+
+当你看到这个接口类型的值时，你不知道它是什么，唯一知道的就是可以通过它的Write方法来做一些事情
+
+## 实现接口的条件
+
+一个对象只要全部实现了接口中的方法，那么就实现了这个接口。换句话说，接口就是一个**需要实现的方法列表**。
+
+我们来定义一个`Sayer`接口：
+
+```go
+// Sayer 接口
+type Sayer interface {
+	say()
+}
+```
+
+定义`dog`和`cat`两个结构体：
+
+```go
+type dog struct {}
+
+type cat struct {}
+```
+
+因为`Sayer`接口里只有一个`say`方法，所以我们只需要给`dog`和`cat `分别实现`say`方法就可以实现`Sayer`接口了。
+
+```go
+// dog实现了Sayer接口
+func (d dog) say() {
+	fmt.Println("汪汪汪")
+}
+
+// cat实现了Sayer接口
+func (c cat) say() {
+	fmt.Println("喵喵喵")
+}
+```
+
+接口的实现就是这么简单，只要实现了接口中的所有方法，就实现了这个接口。
+
+eg:
+
+```go
+type animal interface {
+	move()
+	eat(string)
+}
+type cat struct {
+	name string
+	feet int8
+}
+
+func (c cat) move() {
+	fmt.Println("猫")
+}
+func (c cat) eat(e string) {
+	fmt.Printf("猫吃----%s\n", e)
+
+}
+
+type chicken struct {
+	feet int8
+}
+
+func (c chicken) move() {
+	fmt.Println("鸡")
+}
+func (c chicken) eat(e string) {
+	fmt.Printf("鸡吃----%s\n", e)
+}
+
+func main() {
+	var a1 animal
+	bc := cat{
+		name: "小猫",
+		feet: 4,
+	}
+	a1 = bc
+	fmt.Println(a1)
+	fmt.Printf("%T\n", a1) //main.cat
+	bc.eat("猫粮")
+	kfc := chicken{
+		feet: 2,
+	}
+	a1 = kfc
+	fmt.Println(a1)
+	fmt.Printf("%T\n", a1)  //main.chicken
+}
+```
+
+这个例子中,如果eat方法在实现的时候不传参,那么a1=bc的时候报错
+
+![image-20191212112552486](/Users/wangzhongjie/Library/Application Support/typora-user-images/image-20191212112552486.png)
+
+接口分为动态类型和动态值,这样就实现了接口变量能够存储不同的值
+
+## 接口类型变量
+
+那实现了接口有什么用呢？
+
+接口类型变量能够存储所有实现了该接口的实例。 例如上面的示例中，`Sayer`类型的变量能够存储`dog`和`cat`类型的变量。
+
+```go
+func main() {
+	var x Sayer // 声明一个Sayer类型的变量x
+	a := cat{}  // 实例化一个cat
+	b := dog{}  // 实例化一个dog
+	x = a       // 可以把cat实例直接赋值给x
+	x.say()     // 喵喵喵
+	x = b       // 可以把dog实例直接赋值给x
+	x.say()     // 汪汪汪
+}
+```
+
+## 值接收者和指针接收者实现接口的区别
+
+```go
+type animal interface {
+	move()
+	eat(string)
+}
+type cat struct {
+	name string
+	feet int8
+}
+```
+
+### 值接受者实现接口
+
+```go
+func (c cat) move() {
+ 	fmt.Println("猫")
+ }
+```
+
+此时实现接口的cat类型
+
+```go
+	var a animal
+	c1 := cat{"tom", 4}
+	a = c1
+	fmt.Println(a)        //{tom 4}
+	fmt.Printf("%T\n", a) //main.cat
+	a = &c1
+	fmt.Println(a)        //&{tom 4}
+	fmt.Printf("%T\n", a) //*main.cat
+```
+
+从上面的代码中我们可以发现，使用值接收者实现接口之后，不管是cat结构体还是结构体指针cat类型的变量都可以赋值给该接口变量。因为Go语言中有对指针类型变量求值的语法糖，cat指针a内部会自动求值`*a`。
+
+### 指针接受者实现接口
+
+```go
+func (c *cat) move() {
+	fmt.Println("猫")
+}
+```
+
+此时实现接口cat类型
+
+```go
+	var a animal
+	c1 := cat{"tom", 4}
+	//a = c1 //不可以接受c1
+	a = &c1
+	fmt.Println(a)        //&{tom 4}
+	fmt.Printf("%T\n", a) //*main.cat
+```
+
+此时`move`接受的是`*cat`类型,所以`c1`不能传入`a`,此时`a`只能存储`*cat`类型的值
+
+## 接口和类型的关系
+
+### 一个类型实现多个接口
+
+类似接口嵌套
+
+```go
+// 同一个结构体可以实现多个接口
+type animal interface {
+	mover
+	eater
+}
+type mover interface {
+	move()
+}
+type eater interface {
+	eat(string)
+}
+type cat struct {
+	name string
+	feet int8
+}
+
+func (c *cat) move() {
+	fmt.Println("猫")
+}
+func (c *cat) eat(s string) {
+	fmt.Printf("猫吃---:%s", s)
+}
+
+func main() {
+	var a animal
+	c1 := cat{name: "猫", feet: 1}
+	a = &c1
+	fmt.Println(a)
+	a.eat("猫粮")
+
+}
+```
+
+## 空接口
+
+### 空接口的定义
+
+空接口是指没有定义任何方法的接口。因此任何类型都实现了空接口。
+
+空接口类型的变量可以存储任意类型的变量。
+
+```go
+interface{} //空接口
+```
+
+### 空接口的应用
+
+### 空接口作为函数的参数
+
+```go
+// 空接口作为函数参数
+func show(a interface{}) {
+	fmt.Printf("type:%T value:%v\n", a, a)
+}
+```
+
+#### 空接口作为map的值
+
+```go
+func main() {
+	var m1 map[string]interface{}
+	m1 = make(map[string]interface{}, 16)
+	fmt.Println(m1)
+	m1["name"] = "张三"
+	m1["age"] = 200
+	m1["married"] = false
+	m1["hobby"] = [...]string{"唱", "跳", "rap"}
+	fmt.Println(m1)
+}
+```
+
+## 类型断言
+
+### 接口值
+
+一个接口的值（简称接口值）是由`一个具体类型`和`具体类型的值`两部分组成的。这两部分分别称为接口的`动态类型`和`动态值`。
+
+![接口值图解](https://www.liwenzhou.com/images/Go/interface/interface.png)
+
+想要判断空接口中的值这个时候就可以使用类型断言，其语法格式：
+
+```go
+x.(T)
+```
+
+其中：
+
+- x：表示类型为`interface{}`的变量
+- T：表示断言`x`可能是的类型。
+
+```go
+func assign(a interface{}) {
+	fmt.Printf("%T\n", a)
+	switch t := a.(type) {
+	case string:
+		fmt.Println("string", t)
+	case int:
+		fmt.Println("int", t)
+
+	case bool:
+		fmt.Println("bool", t)
+	case int64:
+		fmt.Println("int64", t)
+	}
+}
+func main() {
+	assign(199)
+}
+```
+
