@@ -247,3 +247,79 @@ func ioutilRead() {
 }
 ```
 
+## 文件写入操作
+
+`os.OpenFile()`函数能够以指定模式打开文件，从而实现文件写入相关功能。
+
+```go
+func OpenFile(name string, flag int, perm FileMode) (*File, error) {
+	...
+}
+```
+
+其中：
+
+`name`：要打开的文件名 `flag`：打开文件的模式。 模式有以下几种：
+
+|     模式      |   含义   |
+| :-----------: | :------: |
+| `os.O_WRONLY` |   只写   |
+| `os.O_CREATE` | 创建文件 |
+| `os.O_RDONLY` |   只读   |
+|  `os.O_RDWR`  |   读写   |
+| `os.O_TRUNC`  |   清空   |
+| `os.O_APPEND` |   追加   |
+
+`perm`：文件权限，一个八进制数。r（读）04，w（写）02，x（执行）01。
+
+### Write和WriteString
+
+```go
+// 打开文件写内容
+func main() {
+	fileObj, err := os.OpenFile("./40-day/day05/12file_write/log.txt", os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Printf("打开文件失败,err:%v\n", err)
+		return
+	}
+	// 关闭文件
+	defer fileObj.Close()
+	var str = "字符串\n"
+	// 写入文件
+	// Write
+	fileObj.Write([]byte(str)) //写入字节切片数据
+	// WriteString
+	fileObj.WriteString("嘻嘻") //直接写入字符串数据
+}
+```
+
+### bufio.NewWriter
+
+```go
+func write2() {
+	fileObj, err := os.OpenFile("./40-day/day05/12file_write/log.txt", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Printf("打开文件失败,err:%v\n", err)
+		return
+	}
+	defer fileObj.Close()
+	// 创建一个写的对象
+	wr := bufio.NewWriter(fileObj)
+	wr.WriteString("又来写了") //写入缓存
+	wr.Flush()             //将缓存中的写入文件
+}
+```
+
+### ioutil.WriteFile
+
+```go
+func write3() {
+	str := "再次来写"
+	err := ioutil.WriteFile("./40-day/day05/12file_write/log.txt", []byte(str), 0666)
+	if err != nil {
+		fmt.Println("write file failed, err:", err)
+		return
+	}
+}
+```
+
