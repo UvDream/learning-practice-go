@@ -26,6 +26,7 @@ func f2() {
 		return
 	}
 	defer tempFile.Close()
+
 	// 读源文件写入临时文件
 	var ret [1]byte
 	n, err := fileObj.Read(ret[:])
@@ -42,21 +43,20 @@ func f2() {
 	// 接着把源文件内容写入临时文件
 	var x [1024]byte
 	for {
-		n, err := fileObj.Read(x[:])
+		m, err := fileObj.Read(x[:])
 		if err == io.EOF {
-			tempFile.Write(x[:n])
+			tempFile.Write(x[:m])
 			break
 		}
 		if err != nil {
 			fmt.Printf("读取失败,err:%v\n", err)
 			return
 		}
-		tempFile.Write(x[:n])
+		tempFile.Write(x[:m])
 	}
 	// 源文件后续写入临时文件
 	fileObj.Close()
 	tempFile.Close()
+	// 重命名
 	os.Rename("./40-day/day06/02file/log1.txt", "./40-day/day06/02file/log.txt")
-	// fmt.Println(n)
-	// fmt.Println(string(ret[:n]))
 }
