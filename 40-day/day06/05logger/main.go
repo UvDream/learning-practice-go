@@ -7,7 +7,7 @@ import (
 
 // 测试日志库
 func main() {
-	log := mylogger.NewLog("Debug")
+	log := mylogger.NewLog("DEBUG")
 	for {
 		log.Debug("1,这是一条Debugger日志")
 		log.Trace("2.TRACE")
