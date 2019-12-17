@@ -506,3 +506,6 @@ if err != nil {
 fmt.Println(timeObj)
 fmt.Println(timeObj.Sub(now))
 ```
+
+# 日志
+
