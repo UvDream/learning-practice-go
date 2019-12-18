@@ -5,9 +5,13 @@ import (
 	"time"
 )
 
+var log mylogger.Logger
+
 // 测试日志库
 func main() {
-	log := mylogger.NewFileLogger("DEBUG", "./", "uv.log", 10*1024)
+	log = mylogger.NewConsoleLog("info")
+	log = mylogger.NewFileLogger("DEBUG", "./", "uv.log", 10*1024)
+
 	for {
 		log.Debug("1,这是一条Debugger日志")
 		log.Trace("2.TRACE")
