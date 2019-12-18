@@ -28,11 +28,6 @@ const (
 	FATAL
 )
 
-// ConsoleLogger 日志结构体
-type ConsoleLogger struct {
-	Level LogLevel
-}
-
 func parseLogLevel(s string) (LogLevel, error) {
 	s = strings.ToLower(s)
 	switch s {
@@ -83,5 +78,4 @@ func getInfo(skip int) (funcName, fileName string, lineNo int) {
 	fileName = path.Base(file)
 	funcName = strings.Split(funcName, ".")[1]
 	return
-
 }

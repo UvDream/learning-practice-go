@@ -5,6 +5,11 @@ import (
 	"time"
 )
 
+// ConsoleLogger 日志结构体
+type ConsoleLogger struct {
+	Level LogLevel
+}
+
 // NewLog 构造函数
 func NewLog(levelStr string) ConsoleLogger {
 	level, err := parseLogLevel(levelStr)
@@ -20,55 +25,43 @@ func (c ConsoleLogger) enable(logLevel LogLevel) bool {
 }
 
 // 日志信息
-func log(lv LogLevel, format string, a ...interface{}) {
-	msg := fmt.Sprintf(format, a...)
-	now := time.Now()
-	funcName, fileName, lineNo := getInfo(3)
-	time := now.Format("2006-01-02 15:04:05")
-	fmt.Printf("[%s][%s][文件名:%s方法名:%s行号:%d]%s\n", time, getLogString(lv), fileName, funcName, lineNo, msg)
+func (c ConsoleLogger) log(lv LogLevel, format string, a ...interface{}) {
+	if c.enable(lv) {
+		msg := fmt.Sprintf(format, a...)
+		now := time.Now()
+		funcName, fileName, lineNo := getInfo(3)
+		time := now.Format("2006-01-02 15:04:05")
+		fmt.Printf("[%s][%s][文件名:%s方法名:%s行号:%d]%s\n", time, getLogString(lv), fileName, funcName, lineNo, msg)
+	}
 }
 
 // Debug 日志
 func (c ConsoleLogger) Debug(format string, a ...interface{}) {
-	if c.enable(DEBUG) {
-		log(DEBUG, format, a...)
-	}
-
+	c.log(DEBUG, format, a...)
 }
 
 // Trace 日志
 func (c ConsoleLogger) Trace(format string, a ...interface{}) {
-	if c.enable(TRACE) {
-		log(TRACE, format, a...)
-	}
+	c.log(TRACE, format, a...)
 
 }
 
 // Info 日志
 func (c ConsoleLogger) Info(format string, a ...interface{}) {
-	if c.enable(INFO) {
-		log(INFO, format, a...)
-	}
+	c.log(INFO, format, a...)
 }
 
 // Warning 日志
 func (c ConsoleLogger) Warning(format string, a ...interface{}) {
-	if c.enable(WARNING) {
-		log(WARNING, format, a...)
-
-	}
+	c.log(WARNING, format, a...)
 }
 
 // Error 日志
 func (c ConsoleLogger) Error(format string, a ...interface{}) {
-	if c.enable(ERROR) {
-		log(ERROR, format, a...)
-	}
+	c.log(ERROR, format, a...)
 }
 
 // Fatal 日志
 func (c ConsoleLogger) Fatal(format string, a ...interface{}) {
-	if c.enable(FATAL) {
-		log(FATAL, format, a...)
-	}
+	c.log(FATAL, format, a...)
 }
