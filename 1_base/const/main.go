@@ -31,6 +31,4 @@ func main()  {
 	fmt.Println(a1,a2)
 	fmt.Println(b1,b2)
 	fmt.Println(c1,c2)
-
-
 }

@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func main()  {
+func main() {
 	s := "helloこんにちは"
 	for i := 0; i < len(s); i++ { //byte
 		fmt.Printf("%v(%c) ", s[i], s[i])
@@ -15,15 +15,14 @@ func main()  {
 	}
 	fmt.Println()
 	// 字符串修改
-	s2:="卞萝卜"
-	s3:=[]rune(s2)//字符串强制转换为rune
-	s3[0]='红'//字符
+	s2 := "卞萝卜"
+	s3 := []rune(s2) //字符串强制转换为rune
+	s3[0] = '红'      //字符
 	fmt.Println(string(s3))
 	// 类型转换
-	n:=10
+	n := 10
 	var f float64
-	f=float64(n)
+	f = float64(n)
 	fmt.Println(f)
-	fmt.Printf("%T\n",f)
-
+	fmt.Printf("%T\n", f)
 }
