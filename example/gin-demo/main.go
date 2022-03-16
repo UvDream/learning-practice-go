@@ -68,4 +68,8 @@ func connectToDatabase() {
 func sqlxConnect() {
 	sqlx.InitDB()
 	sqlx.QueryRow()
+	sqlx.QueryMultiRow()
+	sqlx.InsertRow()
+	sqlx.UpdateRow()
+	sqlx.DeleteRow()
 }
