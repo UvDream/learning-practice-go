@@ -15,7 +15,7 @@ import (
 var (
 	// 页码数
 	page int
-	//	管道
+	// 管道
 	ImagesUrls chan string
 	//	协程数
 	chanTask chan string
@@ -32,7 +32,10 @@ func HandleError(err error, why string) {
 }
 func main() {
 	fmt.Println("请输入需要爬取的页数")
-	fmt.Scanf("%d", &page)
+	_, err := fmt.Scanf("%d", &page)
+	if err != nil {
+		return
+	}
 	//	初始化管道
 	ImagesUrls = make(chan string, 1000000)
 	//	初始化协程数
@@ -52,7 +55,7 @@ func main() {
 	wg.Wait()
 }
 
-//协程统计
+// CheckOK 协程统计
 func CheckOK() {
 	var count int
 	for {
@@ -99,7 +102,7 @@ func getUrls(url string) (urls []string) {
 	return urls
 }
 
-// 根据url获取html
+// GetHTML 根据url获取html
 func GetHTML(url string) (html string) {
 	resp, err := http.Get(url)
 	HandleError(err, "请求url失败")
@@ -119,7 +122,7 @@ func DownloadImg() {
 		if ok {
 			fmt.Printf("--------------------%s下载成功--------------------\n", fileName)
 		} else {
-			fmt.Println("--------------------%s下载失败--------------------\n", fileName)
+			fmt.Printf("--------------------%s下载失败--------------------\n\n", fileName)
 		}
 	}
 	wg.Done()
