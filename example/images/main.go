@@ -117,9 +117,9 @@ func DownloadImg() {
 		fmt.Println("获取到的文件名:" + fileName)
 		ok := DownloadFile(url, fileName)
 		if ok {
-			fmt.Printf("--------------------%s下载成功--------------------", fileName)
+			fmt.Printf("--------------------%s下载成功--------------------\n", fileName)
 		} else {
-			fmt.Println("--------------------%s下载失败--------------------", fileName)
+			fmt.Println("--------------------%s下载失败--------------------\n", fileName)
 		}
 	}
 	wg.Done()
