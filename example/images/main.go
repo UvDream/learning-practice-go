@@ -32,8 +32,7 @@ func HandleError(err error, why string) {
 }
 func main() {
 	fmt.Println("请输入需要爬取的页数")
-	//fmt.Scanf("%d", &page)
-	page := 2
+	fmt.Scanf("%d", &page)
 	//	初始化管道
 	ImagesUrls = make(chan string, 1000000)
 	//	初始化协程数
